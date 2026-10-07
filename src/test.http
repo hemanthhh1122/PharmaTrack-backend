@@ -1,0 +1,14 @@
+### Add Medicine
+
+POST http://localhost:8080/api/medicines
+Content-Type: application/json
+
+{
+  "medicineName": "Paracetamol",
+  "genericName": "Paracetamol",
+  "category": "Analgesic",
+  "dosageForm": "Tablet",
+  "strength": "500 mg",
+  "manufacturer": "PharmaTrack Labs",
+  "reorderLevel": 20
+}
