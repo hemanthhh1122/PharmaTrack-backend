@@ -1,9 +1,9 @@
+
 package com.pharmatrack.pharmatrack.service;
 
 import com.pharmatrack.pharmatrack.entity.Supplier;
 import com.pharmatrack.pharmatrack.repository.SupplierRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -20,6 +20,19 @@ public class SupplierService {
     }
 
     public Supplier addSupplier(Supplier supplier) {
+        return supplierRepository.save(supplier);
+    }
+
+    public Supplier updateSupplier(Long id, Supplier updatedSupplier) {
+        Supplier supplier = supplierRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Supplier not found: " + id));
+
+        supplier.setSupplierName(updatedSupplier.getSupplierName());
+        supplier.setPhone(updatedSupplier.getPhone());
+        supplier.setEmail(updatedSupplier.getEmail());
+        supplier.setAddress(updatedSupplier.getAddress());
+
         return supplierRepository.save(supplier);
     }
 

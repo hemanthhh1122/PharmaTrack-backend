@@ -1,9 +1,9 @@
+
 package com.pharmatrack.pharmatrack.controller;
 
 import com.pharmatrack.pharmatrack.entity.Supplier;
 import com.pharmatrack.pharmatrack.service.SupplierService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -25,6 +25,13 @@ public class SupplierController {
     @PostMapping
     public Supplier addSupplier(@RequestBody Supplier supplier) {
         return supplierService.addSupplier(supplier);
+    }
+
+    @PutMapping("/{id}")
+    public Supplier updateSupplier(
+            @PathVariable Long id,
+            @RequestBody Supplier supplier) {
+        return supplierService.updateSupplier(id, supplier);
     }
 
     @DeleteMapping("/{id}")
