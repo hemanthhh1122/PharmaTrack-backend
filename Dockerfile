@@ -1,6 +1,7 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
+COPY settings.xml /root/.m2/settings.xml
 COPY src ./src
 RUN for i in 1 2 3 4 5; do mvn -U -B -DskipTests package && exit 0; echo "Maven download failed; retrying..."; sleep $((i * 20)); done; exit 1
 
