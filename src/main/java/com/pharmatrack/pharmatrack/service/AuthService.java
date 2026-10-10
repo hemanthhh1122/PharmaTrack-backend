@@ -1,4 +1,3 @@
-
 package com.pharmatrack.pharmatrack.service;
 
 import com.pharmatrack.pharmatrack.entity.AppUser;
@@ -24,7 +23,9 @@ public class AuthService {
             return false;
         }
 
-        return userRepository.findByUsername(username)
+        String normalizedUsername = username.trim();
+
+        return userRepository.findByUsername(normalizedUsername)
                 .map(user -> passwordEncoder.matches(
                         password, user.getPassword()))
                 .orElse(false);
@@ -41,13 +42,15 @@ public class AuthService {
                     "Password must have at least 8 characters");
         }
 
-        if (userRepository.findByUsername(username).isPresent()) {
+        String normalizedUsername = username.trim();
+
+        if (userRepository.findByUsername(normalizedUsername).isPresent()) {
             throw new IllegalArgumentException(
                     "Username already exists");
         }
 
         AppUser user = new AppUser();
-        user.setUsername(username.trim());
+        user.setUsername(normalizedUsername);
         user.setPassword(passwordEncoder.encode(password));
 
         // Every public registration creates a STAFF account.
@@ -55,7 +58,11 @@ public class AuthService {
     }
 
     public AppUser findUser(String username) {
-        return userRepository.findByUsername(username)
+        if (username == null) {
+            throw new IllegalArgumentException("Username is required");
+        }
+
+        return userRepository.findByUsername(username.trim())
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
     }
