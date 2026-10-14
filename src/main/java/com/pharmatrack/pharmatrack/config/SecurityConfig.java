@@ -1,3 +1,4 @@
+
 package com.pharmatrack.pharmatrack.config;
 
 import org.springframework.context.annotation.Bean;
@@ -26,21 +27,22 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of(
-                        "http://localhost:5173",
-                        "https://pharma-track-frontend-gamma.vercel.app"
-                ));
-        configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(
-                List.of("Content-Type", "X-XSRF-TOKEN", "X-CSRF-TOKEN"));
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://pharma-track-frontend-gamma.vercel.app"
+        ));
+
+        configuration.setAllowedMethods(List.of(
+            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+            new UrlBasedCorsConfigurationSource();
 
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
@@ -54,6 +56,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
+
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                 .requestMatchers(
@@ -61,61 +64,42 @@ public class SecurityConfig {
                     "/api/auth/register"
                 ).permitAll()
 
-                .requestMatchers(
-                    HttpMethod.DELETE, "/api/medicines/**"
-                ).hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/medicines/**")
+                    .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/medicines/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/medicines/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/medicines/**")
+                    .hasAnyRole("ADMIN", "STAFF")
 
-                .requestMatchers(
-                    HttpMethod.GET, "/api/medicines/**"
-                ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.DELETE, "/api/suppliers/**")
+                    .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/suppliers/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/suppliers/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/suppliers/**")
+                    .hasAnyRole("ADMIN", "STAFF")
 
-                .requestMatchers(
-                    HttpMethod.POST, "/api/medicines/**"
-                ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.DELETE, "/api/batches/**")
+                    .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/batches/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/batches/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/batches/**")
+                    .hasAnyRole("ADMIN", "STAFF")
 
-                .requestMatchers(
-                    HttpMethod.PUT, "/api/medicines/**"
-                ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.DELETE, "/api/sales/**")
+                    .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/sales/**")
+                    .hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/sales/**")
+                    .hasAnyRole("ADMIN", "STAFF")
 
-                .requestMatchers(
-                    HttpMethod.DELETE, "/api/suppliers/**"
-                ).hasRole("ADMIN")
-
-                .requestMatchers(
-                    HttpMethod.GET, "/api/suppliers/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.POST, "/api/suppliers/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.PUT, "/api/suppliers/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.DELETE, "/api/batches/**"
-                ).hasRole("ADMIN")
-
-                .requestMatchers(
-                    HttpMethod.GET, "/api/batches/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.POST, "/api/batches/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.DELETE, "/api/sales/**"
-                ).hasRole("ADMIN")
-
-                .requestMatchers(
-                    HttpMethod.GET, "/api/sales/**"
-                ).hasAnyRole("ADMIN", "STAFF")
-
-                .requestMatchers(
-                    HttpMethod.POST, "/api/sales/**"
-                ).hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers("/api/csv/**")
+                    .hasAnyRole("ADMIN", "STAFF")
 
                 .anyRequest().authenticated()
             );
